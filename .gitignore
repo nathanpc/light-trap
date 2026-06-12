@@ -1,0 +1,14 @@
+# Compiled binaries.
+*.vb
+*.exe
+
+# Release and Debug folders.
+Launcher/*Dbg/
+Launcher/*Rel/
+
+# IDE temporary files.
+*.log
+
+# Misc.
+.DS_Store
+
