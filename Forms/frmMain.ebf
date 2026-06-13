@@ -1,16 +1,111 @@
 VERSION 5.00
-Begin VB.Form Form1 
-   Caption         =   "Form1"
-   ClientHeight    =   5490
-   ClientLeft      =   60
-   ClientTop       =   345
-   ClientWidth     =   8880
-   ScaleHeight     =   5490
-   ScaleWidth      =   8880
+Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
+Object = "{532C2BF5-6B55-11D1-9AA5-00C04FAD5AEC}#1.0#0"; "MSCEGRID.DLL"
+Begin VB.Form frmMain 
+   BorderStyle     =   0  'None
+   Caption         =   "Light Trap"
+   ClientHeight    =   2595
+   ClientLeft      =   0
+   ClientTop       =   -105
+   ClientWidth     =   9090
+   ScaleHeight     =   2595
+   ScaleWidth      =   9090
+   ShowInTaskbar   =   0   'False
+   WindowState     =   2  'Maximized
+   Begin GRIDLibCtl.GridCtrl grdSteps 
+      Height          =   2175
+      Left            =   0
+      TabIndex        =   1
+      Top             =   360
+      Width           =   4455
+      _cx             =   7858
+      _cy             =   3836
+      BackColor       =   16777215
+      BackColorBkg    =   8421504
+      BackColorSel    =   12937777
+      Cols            =   3
+      FillStyle       =   0
+      FocusRect       =   1
+      ForeColor       =   0
+      ForeColorSel    =   16777215
+      GridColor       =   12632256
+      GridLines       =   1
+      GridLineWidth   =   1
+      HighLight       =   1
+      Redraw          =   -1  'True
+      RowHeightMin    =   0
+      Rows            =   0
+      ScrollBars      =   3
+      ScrollTrack     =   0   'False
+      SelectionMode   =   0
+      TextStyle       =   0
+      WordWrap        =   -1  'True
+      Enabled         =   -1  'True
+   End
+   Begin CommandbarLib.CommandBar cbrMain 
+      Height          =   345
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   9015
+      _cx             =   15901
+      _cy             =   600
+      Enabled         =   -1  'True
+      OKButton        =   0   'False
+      HelpButton      =   0   'False
+      CloseButton     =   -1  'True
+   End
 End
-Attribute VB_Name = "Form1"
+Attribute VB_Name = "frmMain"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+''' Light Trap
+''' A film development assistant for Windows CE.
+'''
+''' Author: Nathan Campos <nathan@innoveworkshop.com>
+
 Option Explicit
+
+'*
+'* Control Management
+'*
+
+' Resizes all the controls together with the window.
+Private Sub ResizeControls()
+    ' Resize the command bar and setup the steps grid.
+    cbrMain.Width = Me.Width
+    SetupStepsView
+End Sub
+
+' Sets up the steps ListView control.
+Private Sub SetupStepsView()
+    ' Resize the control to fit the window.
+    grdSteps.Top = cbrMain.Top + cbrMain.Height
+    grdSteps.Height = Me.Height - cbrMain.Height
+    
+    ' Setup column alignment.
+    grdSteps.ColAlignment(0) = flexAlignCenterCenter
+    grdSteps.ColAlignment(1) = flexAlignCenterCenter
+    grdSteps.ColAlignment(2) = flexAlignCenterCenter
+End Sub
+
+' Executes as soon as the form is loaded.
+Private Sub Form_Load()
+    ResizeControls
+    InitializeStepsHandler grdSteps
+    
+    ' Dummy data...
+    AddStepToQueue 60, "Developer", True
+    AddStepToQueue 60, "Developer", False
+    AddStepToQueue 10, "Developer", True
+    AddStepToQueue 50, "Developer", False
+    AddStepToQueue 10, "Developer", True
+    AddStepToQueue 50, "Developer", False
+    AddStepToQueue 60, "Stop", True
+    AddStepToQueue 60, "Fixer", True
+    AddStepToQueue 60, "Fixer", False
+    AddStepToQueue 10, "Fixer", True
+    AddStepToQueue 50, "Fixer", False
+End Sub
