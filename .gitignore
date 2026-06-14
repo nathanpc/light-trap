@@ -1,14 +1,23 @@
-# Compiled binaries.
-*.vb
-*.exe
+# Compilation Artifacts
+*.o
+*.so
+build/
+Debug/
+*Dbg/
+*Rel/
 
-# Release and Debug folders.
-Launcher/*Dbg/
-Launcher/*Rel/
+# Visual Studio
+*.plg
+*.opt
+*.vbw
+*.ncb
 
-# IDE temporary files.
-*.log
+# eMbedded Visual Studio
+*.vco
+*.vcb
+*.vcl
+*.aps
 
 # Misc.
 .DS_Store
-
+Thumbs.db
