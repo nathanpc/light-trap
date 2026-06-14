@@ -586,11 +586,10 @@ NODEP_CPP_LIGHT=\
 !ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
 
 DEP_CPP_LIGHT=\
+	"..\Source\AboutDialog.h"\
 	"..\Source\LightTrap.h"\
 	"..\Source\StdAfx.h"\
-	
-NODEP_CPP_LIGHT=\
-	"..\Source\resource.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
 	
 
 !ENDIF 
@@ -674,6 +673,7 @@ DEP_CPP_STDAF=\
 
 DEP_CPP_STDAF=\
 	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
 	
 
 !ENDIF 
@@ -729,6 +729,205 @@ SOURCE=.\newres.h
 # Begin Source File
 
 SOURCE=.\resource.h
+# End Source File
+# End Group
+# Begin Group "Windows and Dialogs"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Source\AboutDialog.cpp
+
+!IF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Release"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
+
+DEP_CPP_ABOUT=\
+	"..\Source\AboutDialog.h"\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\AboutDialog.h
+# End Source File
+# End Group
+# Begin Group "Utilities"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Source\Utilities\MsgBoxes.cpp
+
+!IF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Release"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
+
+DEP_CPP_MSGBO=\
+	"..\Source\StdAfx.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\Utilities\MsgBoxes.h
 # End Source File
 # End Group
 # End Target
