@@ -438,7 +438,7 @@ RSC=rc.exe
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "DEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "i486" /r
 CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /Yu"stdafx.h" /Gz /c
-# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /Gz /c
+# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /FR /Gz /c
 # SUBTRACT CPP /YX /Yc /Yu
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
@@ -589,6 +589,7 @@ DEP_CPP_LIGHT=\
 	"..\Source\AboutDialog.h"\
 	"..\Source\LightTrap.h"\
 	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
 
@@ -928,6 +929,117 @@ DEP_CPP_MSGBO=\
 # Begin Source File
 
 SOURCE=..\Source\Utilities\MsgBoxes.h
+# End Source File
+# End Group
+# Begin Group "Components"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Source\StepsTracker.cpp
+
+!IF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Release"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
+
+DEP_CPP_STEPS=\
+	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\StepsTracker.h
 # End Source File
 # End Group
 # End Target

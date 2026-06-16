@@ -10,12 +10,14 @@
 #include <windowsx.h>
 #include <commctrl.h>
 
+#include "StepsTracker.h"
 #include "AboutDialog.h"
 
 // Global variables.
 static HINSTANCE hInst;
 static TCHAR szWindowClass[20];
 static TCHAR szAppTitle[20];
+static StepsTracker *stepsTracker = NULL;
 
 #ifdef SHELL_AYGSHELL
 // Pocket PC specific components.
@@ -236,7 +238,8 @@ LRESULT WndMainCreate(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	// Ensure that the common controls DLL is loaded. 
     InitCommonControls();
 
-	// TODO: Initialize Image Lists.
+	// Initialize auxiliary parts of the application.
+	stepsTracker = new StepsTracker();
 
 #ifdef SHELL_AYGSHELL
 	SHMENUBARINFO mbi = {0};
@@ -281,6 +284,9 @@ LRESULT WndMainCreate(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 
 	// Resize our window appropriately.
 	SetWindowPos(hWnd, NULL, 0, 0, cx, cy, SWP_NOMOVE | SWP_NOZORDER);
+
+	// Setup steps tracker component.
+	stepsTracker->SetupComponents(hInst, hWnd, hwndMenuBar);
 #else
 	// Create CommandBar.
 	hwndCB = CommandBar_Create(hInst, hWnd, IDC_CMDBAR);
@@ -301,6 +307,9 @@ LRESULT WndMainCreate(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	//	tbButtons);
 	CommandBar_AddAdornments(hwndCB, 0, 0);
 	CommandBar_Show(hwndCB, TRUE);
+
+	// Setup steps tracker component.
+	stepsTracker->SetupComponents(hInst, hWnd, hwndCB);
 #endif
 
 	return 0;
@@ -402,7 +411,10 @@ LRESULT WndMainClose(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	// if () return 0
 
 	// Call any destructors that might be needed.
-	// TODO: Call destructors.
+	if (stepsTracker) {
+		delete stepsTracker;
+		stepsTracker = NULL;
+	}
 
 	return DefWindowProc(hWnd, wMsg, wParam, lParam);
 }
