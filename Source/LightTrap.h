@@ -15,9 +15,6 @@
 // Limits.
 #define MAX_LOADSTRING 100
 
-// Control IDs.
-#define IDC_CMDBAR   201
-
 // Main includes.
 #include "stdafx.h"
 
