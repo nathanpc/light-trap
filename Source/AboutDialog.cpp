@@ -14,7 +14,7 @@
  * @param hWnd  Parent window handle.
  */
 void ShowAboutDialog(HINSTANCE hInst, HWND hWnd) {
-	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, (DLGPROC)AboutDlgProc);
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, AboutDlgProc);
 }
 
 /**
@@ -26,7 +26,7 @@ void ShowAboutDialog(HINSTANCE hInst, HWND hWnd) {
  * @param  lParam Message parameter.
  * @return        0 if everything worked.
  */
-LRESULT CALLBACK AboutDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	RECT rt, rt1;
 	int DlgWidth, DlgHeight;	// dialog width and height in pixel units
 	int NewPosX, NewPosY;

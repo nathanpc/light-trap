@@ -15,6 +15,6 @@
 #include "stdafx.h"
 
 void ShowAboutDialog(HINSTANCE hInst, HWND hWnd);
-LRESULT CALLBACK AboutDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 
 #endif // _ABOUTDIALOG_H
