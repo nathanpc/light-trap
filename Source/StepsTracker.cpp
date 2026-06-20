@@ -166,7 +166,7 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) {
  *
  * @return Length of the formatted string, not including the NUL terminator.
  */
-int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) {
+int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) const {
 	USHORT usSeconds;
 	USHORT usMinutes;
 
@@ -176,4 +176,13 @@ int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) {
 
 	// Write the formatted string to the buffer.
 	return _stprintf(szBuffer, _T("%02u:%02u"), usMinutes, usSeconds);
+}
+
+/**
+ * Gets the ListView window handle used to track the steps.
+ *
+ * @return ListView window handle.
+ */
+HWND StepsTracker::ListHandle() const {
+	return this->hwndList;
 }

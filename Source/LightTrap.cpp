@@ -11,6 +11,7 @@
 #include <commctrl.h>
 
 #include "StepsTracker.h"
+#include "TimerDialog.h"
 #include "AboutDialog.h"
 
 // Global variables.
@@ -18,6 +19,7 @@ static HINSTANCE hInst;
 static TCHAR szWindowClass[20];
 static TCHAR szAppTitle[20];
 static StepsTracker *stepsTracker = NULL;
+static TimerDialog *dlgTimer = NULL;
 
 #ifdef SHELL_AYGSHELL
 // Pocket PC specific components.
@@ -312,6 +314,19 @@ LRESULT WndMainCreate(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	stepsTracker->SetupComponents(hInst, hWnd, hwndCB);
 #endif
 
+	// Calculate the timer dialog size and position.
+	RECT rcList;
+	RECT rcTimer;
+	GetClientRect(hWnd, &rcTimer);
+	GetWindowRect(stepsTracker->ListHandle(), &rcList);
+	rcTimer.top += CommandBar_Height(hwndCB);
+	rcTimer.bottom = rcList.bottom;
+	rcTimer.left = rcList.right;
+	rcTimer.right -= rcTimer.left;
+
+	// Initialize the timer dialog child window.
+	dlgTimer = new TimerDialog(hInst, hWnd, rcTimer);
+
 	return 0;
 }
 
@@ -414,6 +429,10 @@ LRESULT WndMainClose(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	if (stepsTracker) {
 		delete stepsTracker;
 		stepsTracker = NULL;
+	}
+	if (dlgTimer) {
+		delete dlgTimer;
+		dlgTimer = NULL;
 	}
 
 	return DefWindowProc(hWnd, wMsg, wParam, lParam);

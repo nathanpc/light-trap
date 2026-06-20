@@ -590,6 +590,7 @@ DEP_CPP_LIGHT=\
 	"..\Source\LightTrap.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\StepsTracker.h"\
+	"..\Source\TimerDialog.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
 
@@ -1040,6 +1041,113 @@ DEP_CPP_STEPS=\
 # Begin Source File
 
 SOURCE=..\Source\StepsTracker.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\TimerDialog.cpp
+
+!IF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH4) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE SH3) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Release"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
+
+DEP_CPP_TIMER=\
+	"..\Source\StdAfx.h"\
+	"..\Source\TimerDialog.h"\
+	"..\Source\Utilities\MsgBoxes.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\TimerDialog.h
 # End Source File
 # End Group
 # End Target

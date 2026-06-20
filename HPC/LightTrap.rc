@@ -91,6 +91,23 @@ BEGIN
     LTEXT           "Copyright (C) 2026",IDC_STATIC,38,25,70,8
 END
 
+IDD_TIMER DIALOG DISCARDABLE  0, 0, 242, 110
+STYLE WS_CHILD | WS_VISIBLE
+FONT 8, "System"
+BEGIN
+    PUSHBUTTON      "Continue",IDC_BTPLAY,185,7,50,40
+    PUSHBUTTON      "Next",IDC_BTNEXT,185,63,50,40
+    CTEXT           "00:00",IDC_LBTIMER,7,7,171,52,WS_BORDER
+    CONTROL         "Progress1",IDC_PBSTEP,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,27,75,151,12
+    CONTROL         "Progress1",IDC_PBAGITATE,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,7,63,171,8
+    CONTROL         "Progress1",IDC_PBTOTAL,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,27,91,151,12
+    LTEXT           "Step",IDC_LBSTEP,7,77,16,8
+    LTEXT           "Total",IDC_LBTOTAL,7,93,19,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -106,6 +123,14 @@ BEGIN
         RIGHTMARGIN, 118
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
+    END
+
+    IDD_TIMER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 235
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 103
     END
 END
 #endif    // APSTUDIO_INVOKED

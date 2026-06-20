@@ -33,7 +33,8 @@ public:
 	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate);
 
 	// Misc.
-	int DurationToString(LPTSTR szBuffer, UINT uDuration);
+	int DurationToString(LPTSTR szBuffer, UINT uDuration) const;
+	HWND ListHandle() const;
 };
 
 #endif // _STEPSTRACKER_H
