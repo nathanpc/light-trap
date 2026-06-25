@@ -97,10 +97,13 @@ void TimerDialog::SetupComponents(HWND hDlg) {
     this->hfTimer = CreateFontIndirect(&lf);
 	SendMessage(lblTimer, WM_SETFONT, (WPARAM)this->hfTimer, TRUE);
 
+	// Setup progress bar steps.
+	SendMessage(this->pgbStep, PBM_SETSTEP, (WPARAM)1, 0);
+	SendMessage(this->pgbTotal, PBM_SETSTEP, (WPARAM)1, 0);
+	SendMessage(this->pgbAgitation, PBM_SETSTEP, (WPARAM)1, 0);
+
 	// Reset the timer.
-	//SetTimer(0, TIMER_DISABLED);
-	SetProcessTotal(10);
-	SetStepTimer(5, TIMER_RESET);
+	SetStepTimer(0, TIMER_DISABLED);
 }
 
 /**
@@ -172,8 +175,7 @@ void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
 	this->timerState = tms;
 
 	// Display changes in the UI.
-	SendMessage(this->pgbStep, PBM_SETRANGE, 0,
-		MAKELPARAM(0, uSeconds * PB_STEP_MULT));
+	SendMessage(this->pgbStep, PBM_SETRANGE32, 0, uSeconds * PB_STEP_MULT);
 	UpdateComponents();
 
 	// Start the timer if we were told to hit the ground running.
@@ -187,7 +189,7 @@ void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
  */
 void TimerDialog::StartTimer() {
 	// Start the step system timer.
-	if (!::SetTimer(this->hDlg, STEP_TIMER_ID, 1000, NULL)) {
+	if (!SetTimer(this->hDlg, STEP_TIMER_ID, 1000, NULL)) {
 		MsgBoxError(this->hDlg, _T("Timer error"),
 			_T("Failed to start the step system timer."));
 		MsgBoxLastError(this->hDlg);
@@ -198,7 +200,7 @@ void TimerDialog::StartTimer() {
 	}
 
 	// Start the progress bar smoothing system timer.
-	if (!::SetTimer(this->hDlg, SMOOTH_TIMER_ID, 1000 / PB_STEP_MULT, NULL)) {
+	if (!SetTimer(this->hDlg, SMOOTH_TIMER_ID, 1000 / PB_STEP_MULT, NULL)) {
 		MsgBoxError(this->hDlg, _T("Timer error"),
 			_T("Failed to start the progress bar smoothing system timer."));
 		MsgBoxLastError(this->hDlg);
@@ -281,7 +283,7 @@ void TimerDialog::TimerTick() {
  */
 void TimerDialog::SmoothTimerTick() {
 	this->iTimerStepMult++;
-	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)this->iTimerStepMult, 0);
+	SendMessage(this->pgbStep, PBM_STEPIT, 0, 0);
 }
 
 /**
