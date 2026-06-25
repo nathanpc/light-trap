@@ -325,6 +325,7 @@ LRESULT WndMainCreate(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 
 	// Initialize the timer dialog child window.
 	dlgTimer = new TimerDialog(hInst, hWnd, rcTimer);
+	stepsTracker->SetTimerDialog(dlgTimer);
 
 	return 0;
 }
@@ -366,10 +367,12 @@ LRESULT WndMainCommand(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
  */
 LRESULT WndMainNotify(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 	LPNMHDR nmh = (LPNMHDR)lParam;
-	switch (nmh->code) {
-	default:
-		return DefWindowProc(hWnd, wMsg, wParam, lParam);
-	}
+
+	// Check if the message is for the steps list.
+	if (stepsTracker && (stepsTracker->ListHandle() == nmh->hwndFrom))
+		stepsTracker->OnNotify(nmh);
+	
+	return DefWindowProc(hWnd, wMsg, wParam, lParam);
 }
 
 /**

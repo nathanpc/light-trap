@@ -13,6 +13,7 @@
 #endif // _MSC_VER > 1000
 
 #include "stdafx.h"
+#include "TimerDialog.h"
 
 /**
  * Manages the film development steps and the workflow.
@@ -23,14 +24,21 @@ private:
 	HWND hwndParent;
 	HWND hwndList;
 
+	TimerDialog *timer;
+
 public:
 	// Constructor and destructor.
 	StepsTracker();
 	virtual ~StepsTracker();
+	void SetTimerDialog(TimerDialog *timer);
 
 	// User interface.
 	void SetupComponents(HINSTANCE hInst, HWND hwndParent, HWND hwndBar);
 	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate);
+	bool  GetSelectedItem(LPLVITEM lvi);
+
+	// Event handlers.
+	void OnNotify(LPNMHDR nmh);
 
 	// Misc.
 	static int DurationToString(LPTSTR szBuffer, UINT uDuration);

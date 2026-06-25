@@ -23,6 +23,15 @@ StepsTracker::~StepsTracker() {
 }
 
 /**
+ * Sets the timer dialog internally to be called from event handlers.
+ *
+ * @param timer TimerDialog object.
+ */
+void StepsTracker::SetTimerDialog(TimerDialog *timer) {
+	this->timer = timer;
+}
+
+/**
  * Sets up the UI components for the steps tracker.
  *
  * @param hInst      Application's intance.
@@ -156,6 +165,43 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) {
 			_T("An error occurred while trying to set the agitation of a step"));
 	}
 
+}
+
+/**
+ * Handles WM_NOTIFY messages sent to the ListView control.
+ *
+ * @param nmh structure that contains information about the notification.
+ */
+void StepsTracker::OnNotify(LPNMHDR nmh) {
+	if (nmh->code == LVN_ITEMACTIVATE) {
+		LVITEM lvi = { 0 };
+
+		// Get the selected item.
+		lvi.mask = LVIF_PARAM | LVIF_TEXT;
+		if (!GetSelectedItem(&lvi))
+			return;
+
+		// Get the duration and pass it along to the timer dialog.
+		this->timer->SetStepTimer((UINT)lvi.lParam, TIMER_RESET);
+	}
+}
+
+/**
+ * Get the selected list item object from the ListView.
+ *
+ * @param lvi Pointer to a ListView item structure with the flags field already
+ *            populated.
+ *
+ * @return TRUE if the operation was successful, FALSE if no item is selected.
+ */
+bool StepsTracker::GetSelectedItem(LPLVITEM lvi) {
+	// Get the selected item.
+	int iItem = ListView_GetNextItem(this->hwndList, -1, LVNI_SELECTED);
+	if (iItem == -1)
+		return false;
+
+	lvi->iItem = iItem;
+	return ListView_GetItem(this->hwndList, lvi);
 }
 
 /**
