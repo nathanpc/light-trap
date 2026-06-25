@@ -8,7 +8,6 @@
 #include "LightTrap.h"
 
 #include <windowsx.h>
-#include <commctrl.h>
 
 #include "StepsTracker.h"
 #include "TimerDialog.h"
