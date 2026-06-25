@@ -52,6 +52,7 @@ private:
 	UINT uTimerSetStep;
 	int iTimerStepSeconds;
 	int iTimerTotalSeconds;
+	int iTimerStepMult;
 
 	// Internal methods.
 	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
@@ -72,6 +73,7 @@ public:
 	void StartTimer();
 	void PauseTimer(bool bChangeState);
 	void TimerTick();
+	void SmoothTimerTick();
 
 	// Event handlers.
 	void OnButtonPlay_Clicked();

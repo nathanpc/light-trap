@@ -10,8 +10,20 @@
 
 #include "StepsTracker.h"
 
-// Internal timer ID.
-#define INT_TIMER_ID 1020
+/**
+ * Main step timer (1 second) ID.
+ */
+#define STEP_TIMER_ID 1020
+
+/**
+ * Smooth progress bar timer ID.
+ */
+#define SMOOTH_TIMER_ID 1021
+
+/**
+ * Multiplier factor for smoothing out the step progress bar.
+ */
+#define PB_STEP_MULT 10
 
 // Dialog procedure prototype.
 BOOL CALLBACK TimerDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
@@ -101,8 +113,7 @@ void TimerDialog::UpdateComponents(bool bSkipButtons) {
 	TCHAR szTimer[7];
 	StepsTracker::DurationToString(szTimer, this->iTimerStepSeconds);
 	SetWindowText(this->lblTimer, szTimer);
-	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)(this->uTimerSetStep -
-		this->iTimerStepSeconds), 0);
+	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)this->iTimerStepMult, 0);
 	SendMessage(this->pgbTotal, PBM_SETPOS, (WPARAM)this->iTimerTotalSeconds, 0);
 
 	// Skip updating the buttons?
@@ -157,10 +168,12 @@ void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
 	// Set internal state variables.
 	this->uTimerSetStep = uSeconds;
 	this->iTimerStepSeconds = uSeconds;
+	this->iTimerStepMult = 0;
 	this->timerState = tms;
 
 	// Display changes in the UI.
-	SendMessage(this->pgbStep, PBM_SETRANGE, 0, MAKELPARAM(0, uSeconds));
+	SendMessage(this->pgbStep, PBM_SETRANGE, 0,
+		MAKELPARAM(0, uSeconds * PB_STEP_MULT));
 	UpdateComponents();
 
 	// Start the timer if we were told to hit the ground running.
@@ -173,10 +186,21 @@ void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
  * the UI components.
  */
 void TimerDialog::StartTimer() {
-	// Start the internal system timer.
-	if (!::SetTimer(this->hDlg, INT_TIMER_ID, 1000, NULL)) {
+	// Start the step system timer.
+	if (!::SetTimer(this->hDlg, STEP_TIMER_ID, 1000, NULL)) {
 		MsgBoxError(this->hDlg, _T("Timer error"),
-			_T("Failed to start internal system timer."));
+			_T("Failed to start the step system timer."));
+		MsgBoxLastError(this->hDlg);
+
+		this->timerState = TIMER_DISABLED;
+		UpdateComponents();
+		return;
+	}
+
+	// Start the progress bar smoothing system timer.
+	if (!::SetTimer(this->hDlg, SMOOTH_TIMER_ID, 1000 / PB_STEP_MULT, NULL)) {
+		MsgBoxError(this->hDlg, _T("Timer error"),
+			_T("Failed to start the progress bar smoothing system timer."));
 		MsgBoxLastError(this->hDlg);
 
 		this->timerState = TIMER_DISABLED;
@@ -196,12 +220,28 @@ void TimerDialog::StartTimer() {
  * @param bChangeState Should we change the state of the timer to paused?
  */
 void TimerDialog::PauseTimer(bool bChangeState) {
-	// Kill the internal timer if needed.
-	if ((timerState == TIMER_RUNNING) && !KillTimer(hDlg, INT_TIMER_ID)) {
-		MsgBoxError(this->hDlg, _T("Timer error"),
-			_T("Failed to kill internal system timer."));
-		MsgBoxLastError(this->hDlg);
-		return;
+	// Kill the timers if needed.
+	if (timerState == TIMER_RUNNING) {
+		bool bFailure = false;
+
+		// Kill the step timer.
+		if (!KillTimer(hDlg, STEP_TIMER_ID)) {
+			MsgBoxError(this->hDlg, _T("Timer error"),
+				_T("Failed to kill the step system timer."));
+			MsgBoxLastError(this->hDlg);
+			bFailure = true;
+		}
+
+		// Kill the progress bar smoothing timer.
+		if (!KillTimer(hDlg, SMOOTH_TIMER_ID)) {
+			MsgBoxError(this->hDlg, _T("Timer error"),
+				_T("Failed to kill the progress bar smoothing system timer."));
+			MsgBoxLastError(this->hDlg);
+			bFailure = true;
+		}
+
+		if (bFailure)
+			return;
 	}
 
 	if (bChangeState) {
@@ -212,13 +252,15 @@ void TimerDialog::PauseTimer(bool bChangeState) {
 }
 
 /**
- * Handles the tick of the internal system timer and updates the application's
+ * Handles the tick of the main step system timer and updates the application's
  * UI and state accordingly.
  */
 void TimerDialog::TimerTick() {
 	// Tick the timer counter.
 	this->iTimerStepSeconds--;
 	this->iTimerTotalSeconds++;
+	this->iTimerStepMult = (this->uTimerSetStep - this->iTimerStepSeconds) *
+		PB_STEP_MULT;
 
 	// Have we finished this step?
 	if (this->iTimerStepSeconds <= 0) {
@@ -231,6 +273,15 @@ void TimerDialog::TimerTick() {
 
 	// Update the UI components.
 	UpdateComponents(true);
+}
+
+/**
+ * Handles the tick of the progress bar smoothing system timer and updates the
+ * application's UI and state accordingly.
+ */
+void TimerDialog::SmoothTimerTick() {
+	this->iTimerStepMult++;
+	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)this->iTimerStepMult, 0);
 }
 
 /**
@@ -328,8 +379,15 @@ BOOL CALLBACK TimerDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 		}
 		break;
 	case WM_TIMER:
-		// Handle the internal timer tick.
-		pThis->TimerTick();
+		// Handle the system timer tick.
+		switch (wParam) {
+		case SMOOTH_TIMER_ID:
+			pThis->SmoothTimerTick();
+			break;
+		case STEP_TIMER_ID:
+			pThis->TimerTick();
+			break;
+		}
 		break;
 	}
 
