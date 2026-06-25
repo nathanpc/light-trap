@@ -33,7 +33,7 @@ public:
 	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate);
 
 	// Misc.
-	int DurationToString(LPTSTR szBuffer, UINT uDuration) const;
+	static int DurationToString(LPTSTR szBuffer, UINT uDuration);
 	HWND ListHandle() const;
 };
 

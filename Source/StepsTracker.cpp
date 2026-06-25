@@ -166,7 +166,7 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) {
  *
  * @return Length of the formatted string, not including the NUL terminator.
  */
-int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) const {
+int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) {
 	USHORT usSeconds;
 	USHORT usMinutes;
 
