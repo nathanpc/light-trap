@@ -16,6 +16,18 @@
 #include "stdafx.h"
 
 /**
+ * Timer states.
+ */
+enum timer_state {
+	TIMER_DISABLED = -1,
+	TIMER_RESET = 0,
+	TIMER_PAUSED,
+	TIMER_RUNNING,
+	TIMER_FINISHED
+};
+typedef enum timer_state TMRSTATE;
+
+/**
  * Timer dialog that displays the current step to the user.
  */
 class TimerDialog {
@@ -34,6 +46,13 @@ private:
 	HWND btnPlay;
 	HWND btnNext;
 
+	// Timer state.
+	TMRSTATE timerState;
+	int iTimerSeconds;
+
+	// Internal methods.
+	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
+
 public:
 	// Constructor and destructor.
 	TimerDialog(HINSTANCE hInst, HWND hwndParent, RECT rc);
@@ -41,6 +60,18 @@ public:
 
 	// UI components.
 	void SetupComponents(HWND hDlg);
+	void UpdateComponents(bool bSkipButtons);
+	void UpdateComponents();
+
+	// Timer-related functions.
+	void SetTimer(UINT uSeconds, TMRSTATE tms);
+	void StartTimer();
+	void PauseTimer(bool bChangeState);
+	void TimerTick();
+
+	// Event handlers.
+	void OnButtonPlay_Clicked();
+	void OnButtonNext_Clicked();
 };
 
 #endif // _TIMERDIALOG_H
