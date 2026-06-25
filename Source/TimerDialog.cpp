@@ -87,7 +87,8 @@ void TimerDialog::SetupComponents(HWND hDlg) {
 
 	// Reset the timer.
 	//SetTimer(0, TIMER_DISABLED);
-	SetTimer(5, TIMER_RESET);
+	SetProcessTotal(10);
+	SetStepTimer(5, TIMER_RESET);
 }
 
 /**
@@ -98,8 +99,11 @@ void TimerDialog::SetupComponents(HWND hDlg) {
 void TimerDialog::UpdateComponents(bool bSkipButtons) {
 	// Update timer label and progress bars.
 	TCHAR szTimer[7];
-	StepsTracker::DurationToString(szTimer, this->iTimerSeconds);
+	StepsTracker::DurationToString(szTimer, this->iTimerStepSeconds);
 	SetWindowText(this->lblTimer, szTimer);
+	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)(this->uTimerSetStep -
+		this->iTimerStepSeconds), 0);
+	SendMessage(this->pgbTotal, PBM_SETPOS, (WPARAM)this->iTimerTotalSeconds, 0);
 
 	// Skip updating the buttons?
 	if (bSkipButtons)
@@ -133,17 +137,30 @@ void TimerDialog::UpdateComponents() {
 }
 
 /**
+ * Sets the total number of seconds for the entire development process.
+ *
+ * @param uSeconds Total number of seconds for the entire development process.
+ */
+void TimerDialog::SetProcessTotal(UINT uSeconds) {
+	this->uTimerSetTotal = uSeconds;
+	SendMessage(this->pgbTotal, PBM_SETRANGE, 0, MAKELPARAM(0, uSeconds));
+	UpdateComponents(true);
+}
+
+/**
  * Resets the state of the timer and sets the time the timer should run for.
  *
  * @param uSeconds Number of seconds the timer should run for.
  * @param tms      State the timer should be in after setting it.
  */
-void TimerDialog::SetTimer(UINT uSeconds, TMRSTATE tms) {
+void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
 	// Set internal state variables.
-	this->iTimerSeconds = uSeconds;
+	this->uTimerSetStep = uSeconds;
+	this->iTimerStepSeconds = uSeconds;
 	this->timerState = tms;
 
 	// Display changes in the UI.
+	SendMessage(this->pgbStep, PBM_SETRANGE, 0, MAKELPARAM(0, uSeconds));
 	UpdateComponents();
 
 	// Start the timer if we were told to hit the ground running.
@@ -200,10 +217,11 @@ void TimerDialog::PauseTimer(bool bChangeState) {
  */
 void TimerDialog::TimerTick() {
 	// Tick the timer counter.
-	this->iTimerSeconds--;
+	this->iTimerStepSeconds--;
+	this->iTimerTotalSeconds++;
 
 	// Have we finished this step?
-	if (this->iTimerSeconds <= 0) {
+	if (this->iTimerStepSeconds <= 0) {
 		PauseTimer(false);
 		this->timerState = TIMER_FINISHED;
 
@@ -238,6 +256,9 @@ void TimerDialog::OnButtonPlay_Clicked() {
  * Handles the click event of the Next/Reset button.
  */
 void TimerDialog::OnButtonNext_Clicked() {
+	// TODO: Skip should add the remainder seconds to total timer count before zeroing it.
+
+
 	switch (this->timerState) {
 	case TIMER_DISABLED:
 		SetButtonsState(false, _T("Continue"), false, _T("Next"));

@@ -48,7 +48,10 @@ private:
 
 	// Timer state.
 	TMRSTATE timerState;
-	int iTimerSeconds;
+	UINT uTimerSetTotal;
+	UINT uTimerSetStep;
+	int iTimerStepSeconds;
+	int iTimerTotalSeconds;
 
 	// Internal methods.
 	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
@@ -64,7 +67,8 @@ public:
 	void UpdateComponents();
 
 	// Timer-related functions.
-	void SetTimer(UINT uSeconds, TMRSTATE tms);
+	void SetProcessTotal(UINT uSeconds);
+	void SetStepTimer(UINT uSeconds, TMRSTATE tms);
 	void StartTimer();
 	void PauseTimer(bool bChangeState);
 	void TimerTick();
