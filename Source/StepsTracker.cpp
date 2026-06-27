@@ -57,7 +57,8 @@ void StepsTracker::SetupComponents(HINSTANCE hInst, HWND hwndParent,
 	// Create the ListView window.
 	this->hwndList = CreateWindowEx(0, WC_LISTVIEW, _T(""),
 		WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_REPORT | LVS_NOSORTHEADER |
-		LVS_SHAREIMAGELISTS, rc.left, rc.top, rc.right, rc.bottom,
+		LVS_SHAREIMAGELISTS | LVS_SHOWSELALWAYS | LVS_SINGLESEL,
+		rc.left, rc.top, rc.right, rc.bottom,
 		hwndParent, (HMENU)IDC_STEPSLIST, hInst, NULL);
 	if (this->hwndList == NULL) {
 		MsgBoxError(hwndParent, _T("UI Error"),
