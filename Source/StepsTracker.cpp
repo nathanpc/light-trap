@@ -29,6 +29,9 @@ StepsTracker::~StepsTracker() {
  */
 void StepsTracker::SetTimerDialog(TimerDialog *timer) {
 	this->timer = timer;
+
+	// DELETEME:
+	timer->SetProcessTotal(GetOverallDuration());
 }
 
 /**
@@ -128,7 +131,7 @@ void StepsTracker::SetupComponents(HINSTANCE hInst, HWND hwndParent,
  * @param szChemical Chemical to be used.
  * @param bAgitate   Should we agitate during this step?
  */
-void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) {
+void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) const {
 	LVITEM lvi;
 	TCHAR szTime[8];
 
@@ -169,11 +172,29 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) {
 }
 
 /**
+ * Get the selected list item object from the ListView.
+ *
+ * @param lvi Pointer to a ListView item structure with the flags field already
+ *            populated.
+ *
+ * @return TRUE if the operation was successful, FALSE if no item is selected.
+ */
+bool StepsTracker::GetSelectedItem(LPLVITEM lvi) const {
+	// Get the selected item.
+	int iItem = ListView_GetNextItem(this->hwndList, -1, LVNI_SELECTED);
+	if (iItem == -1)
+		return false;
+
+	lvi->iItem = iItem;
+	return ListView_GetItem(this->hwndList, lvi) != 0;
+}
+
+/**
  * Handles WM_NOTIFY messages sent to the ListView control.
  *
  * @param nmh structure that contains information about the notification.
  */
-void StepsTracker::OnNotify(LPNMHDR nmh) {
+void StepsTracker::OnNotify(LPNMHDR nmh) const {
 	if (nmh->code == LVN_ITEMACTIVATE) {
 		LVITEM lvi = { 0 };
 
@@ -188,21 +209,27 @@ void StepsTracker::OnNotify(LPNMHDR nmh) {
 }
 
 /**
- * Get the selected list item object from the ListView.
+ * Gets the duration of the entire process, summing up all the steps in the
+ * list.
  *
- * @param lvi Pointer to a ListView item structure with the flags field already
- *            populated.
- *
- * @return TRUE if the operation was successful, FALSE if no item is selected.
+ * @return Duration of the entire process.
  */
-bool StepsTracker::GetSelectedItem(LPLVITEM lvi) {
-	// Get the selected item.
-	int iItem = ListView_GetNextItem(this->hwndList, -1, LVNI_SELECTED);
-	if (iItem == -1)
-		return false;
+UINT StepsTracker::GetOverallDuration() const {
+	UINT uDuration = 0;
 
-	lvi->iItem = iItem;
-	return ListView_GetItem(this->hwndList, lvi);
+	// Prepare the ListView item structure.
+	LVITEM lvi = { 0 };
+	lvi.mask = LVIF_PARAM | LVIF_TEXT;
+
+	// Go through each item summing up all the durations.
+	int iIndex = -1;
+	while ((iIndex = ListView_GetNextItem(this->hwndList, iIndex, LVNI_ALL)) >= 0) {
+		lvi.iItem = iIndex;
+		if (ListView_GetItem(this->hwndList, &lvi))
+			uDuration += (UINT)lvi.lParam;
+	}
+
+	return uDuration;
 }
 
 /**

@@ -34,13 +34,14 @@ public:
 
 	// User interface.
 	void SetupComponents(HINSTANCE hInst, HWND hwndParent, HWND hwndBar);
-	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate);
-	bool  GetSelectedItem(LPLVITEM lvi);
+	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) const;
+	bool GetSelectedItem(LPLVITEM lvi) const;
 
 	// Event handlers.
-	void OnNotify(LPNMHDR nmh);
+	void OnNotify(LPNMHDR nmh) const;
 
 	// Misc.
+	UINT GetOverallDuration() const;
 	static int DurationToString(LPTSTR szBuffer, UINT uDuration);
 	HWND ListHandle() const;
 };
