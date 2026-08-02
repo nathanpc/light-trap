@@ -10,6 +10,8 @@
 #include <commctrl.h>
 #include <tchar.h>
 
+#include "Step.h"
+
 /**
  * Initializes the steps tracker.
  */
@@ -113,15 +115,15 @@ void StepsTracker::SetupComponents(HINSTANCE hInst, HWND hwndParent,
 	ShowWindow(this->hwndList, SW_SHOW);
 
 	// Test items:
-	this->AddStep(60, _T("Developer"), true);
-	this->AddStep(60, _T("Developer"), false);
-	this->AddStep(10, _T("Developer"), true);
-	this->AddStep(50, _T("Developer"), false);
-	this->AddStep(60, _T("Stop"), true);
-	this->AddStep(60, _T("Fixer"), true);
-	this->AddStep(60, _T("Fixer"), false);
-	this->AddStep(10, _T("Fixer"), true);
-	this->AddStep(50, _T("Fixer"), false);
+	this->AddStep(60, _T("Developer"), true, true);
+	this->AddStep(60, _T("Developer"), false, true);
+	this->AddStep(10, _T("Developer"), true, true);
+	this->AddStep(50, _T("Developer"), false, false);
+	this->AddStep(60, _T("Stop"), true, false);
+	this->AddStep(60, _T("Fixer"), true, true);
+	this->AddStep(60, _T("Fixer"), false, true);
+	this->AddStep(10, _T("Fixer"), true, true);
+	this->AddStep(50, _T("Fixer"), false, false);
 }
 
 /**
@@ -130,20 +132,21 @@ void StepsTracker::SetupComponents(HINSTANCE hInst, HWND hwndParent,
  * @param uDuration  Duration of the step.
  * @param szChemical Chemical to be used.
  * @param bAgitate   Should we agitate during this step?
+ * @param bAutoNext  Should automatically move to the next step when finished?
  */
-void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) const {
+void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
+						   bool bAutoNext) const {
 	LVITEM lvi;
-	TCHAR szTime[8];
+	Step *step = new Step(uDuration, szChemical, bAgitate, bAutoNext);
 
 	// Populate ListView item structure.
-	this->DurationToString(szTime, uDuration);
 	lvi.mask = LVIF_TEXT | LVIF_PARAM | LVIF_STATE;
 	lvi.state = 0; 
 	lvi.stateMask = 0; 
    	lvi.iItem = ListView_GetItemCount(this->hwndList);
 	lvi.iSubItem = 0;
-	lvi.lParam = (LPARAM)uDuration;
-	lvi.pszText = szTime;
+	lvi.lParam = (LPARAM)step;
+	lvi.pszText = (LPTSTR)step->TimeString();
 
 	// Insert the item into the ListView.
 	if (ListView_InsertItem(this->hwndList, &lvi) == -1) {
@@ -154,7 +157,7 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) con
 	// Populate and set the chemical sub-item.
 	lvi.mask = LVIF_TEXT;
 	lvi.iSubItem = 1;
-	lvi.pszText = szChemical;
+	lvi.pszText = (LPTSTR)step->Chemical();
 	if (!ListView_SetItem(this->hwndList, &lvi)) {
 		MsgBoxError(this->hwndParent, _T("Steps list error"),
 			_T("An error occurred while trying to set the chemical of a step"));
@@ -237,7 +240,7 @@ void StepsTracker::OnNotify(LPNMHDR nmh) const {
 			return;
 
 		// Get the duration and pass it along to the timer dialog.
-		this->timer->SetStepTimer((UINT)lvi.lParam, TIMER_RESET, true);
+		this->timer->SetStepTimer((Step *)lvi.lParam, TIMER_RESET);
 	}
 }
 
@@ -280,26 +283,6 @@ UINT StepsTracker::GetOverallDuration() const {
 	}
 
 	return uDuration;
-}
-
-/**
- * Converts a duration in seconds to a formatted string in the MM:SS format.
- *
- * @param uDuration Duration of a step in seconds.
- * @param szBuffer  Buffer long enough to contain the formatted string.
- *
- * @return Length of the formatted string, not including the NUL terminator.
- */
-int StepsTracker::DurationToString(LPTSTR szBuffer, UINT uDuration) {
-	USHORT usSeconds;
-	USHORT usMinutes;
-
-	// Calculate minutes and seconds individually.
-	usSeconds = uDuration % 60;
-	usMinutes = (USHORT)((uDuration - usSeconds) / 60);
-
-	// Write the formatted string to the buffer.
-	return _stprintf(szBuffer, _T("%02u:%02u"), usMinutes, usSeconds);
 }
 
 /**

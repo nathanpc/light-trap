@@ -14,6 +14,7 @@
 #endif // _MSC_VER > 1000
 
 #include "stdafx.h"
+#include "Step.h"
 
 /**
  * Timer states.
@@ -49,7 +50,6 @@ private:
 	// Timer state.
 	TMRSTATE timerState;
 	UINT uTimerSetTotal;
-	UINT uTimerSetStep;
 	int iTimerStepSeconds;
 	int iTimerTotalSeconds;
 	int iTimerStepMult;
@@ -57,7 +57,9 @@ private:
 	// Agitation helper.
 	UINT uAgitationTick;
 	int iAgitationDirection;
-	bool bAgitate;
+
+	// Local step object.
+	const Step *step;
 
 	// Internal methods.
 	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
@@ -74,7 +76,7 @@ public:
 
 	// Timer-related functions.
 	void SetProcessTotal(UINT uSeconds);
-	void SetStepTimer(UINT uSeconds, TMRSTATE tms, bool bAgitate);
+	void SetStepTimer(const Step *step, TMRSTATE tms);
 	void StartTimer();
 	void PauseTimer(bool bChangeState);
 	void TimerTick();

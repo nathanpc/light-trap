@@ -945,6 +945,10 @@ SOURCE=..\Source\Utilities\MsgBoxes.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\Source\Step.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Source\StepsTracker.cpp
 
 !IF  "$(CFG)" == "LightTrap - Win32 (WCE MIPS) Release"

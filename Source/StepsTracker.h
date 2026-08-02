@@ -34,7 +34,8 @@ public:
 
 	// User interface.
 	void SetupComponents(HINSTANCE hInst, HWND hwndParent, HWND hwndBar);
-	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) const;
+	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
+		bool bAutoNext) const;
 	int GetSelectedItemIndex() const;
 	bool GetSelectedItem(LPLVITEM lvi) const;
 	void NextStep() const;
@@ -45,7 +46,6 @@ public:
 
 	// Misc.
 	UINT GetOverallDuration() const;
-	static int DurationToString(LPTSTR szBuffer, UINT uDuration);
 	HWND ListHandle() const;
 };
 

@@ -45,10 +45,10 @@ TimerDialog::TimerDialog(HINSTANCE hInst, HWND hwndParent, RECT rc) {
 	this->hInst = hInst;
 	this->hwndParent = hwndParent;
 
-	// Agitation helper reset.
+	// Reset some variables.
+	this->step = NULL;
 	this->uAgitationTick = 0;
 	this->iAgitationDirection = 0;
-	this->bAgitate = false;
 
 	// Load and embed the detail view dialog.
 	HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDD_TIMER), RT_DIALOG);
@@ -117,7 +117,7 @@ void TimerDialog::SetupComponents(HWND hDlg) {
 	SendMessage(this->pgbAgitation, PBM_SETSTEP, (WPARAM)1, 0);
 
 	// Reset the timer.
-	SetStepTimer(0, TIMER_DISABLED, false);
+	SetStepTimer(NULL, TIMER_DISABLED);
 }
 
 /**
@@ -128,7 +128,7 @@ void TimerDialog::SetupComponents(HWND hDlg) {
 void TimerDialog::UpdateComponents(bool bSkipButtons) {
 	// Update timer label and progress bars.
 	TCHAR szTimer[7];
-	StepsTracker::DurationToString(szTimer, this->iTimerStepSeconds);
+	Step::DurationToString(szTimer, this->iTimerStepSeconds);
 	SetWindowText(this->lblTimer, szTimer);
 	SendMessage(this->pgbStep, PBM_SETPOS, (WPARAM)this->iTimerStepMult, 0);
 	SendMessage(this->pgbTotal, PBM_SETPOS, (WPARAM)this->iTimerTotalSeconds, 0);
@@ -178,20 +178,19 @@ void TimerDialog::SetProcessTotal(UINT uSeconds) {
 /**
  * Resets the state of the timer and sets the time the timer should run for.
  *
- * @param uSeconds Number of seconds the timer should run for.
- * @param tms      State the timer should be in after setting it.
- * @param bAgitate Are we supposed to be agitating?
+ * @param step Step object with all the information needed about this step.
+ * @param tms  State the timer should be in after setting it.
  */
-void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms, bool bAgitate) {
+void TimerDialog::SetStepTimer(const Step *step, TMRSTATE tms) {
 	// Set internal state variables.
-	this->uTimerSetStep = uSeconds;
-	this->iTimerStepSeconds = uSeconds;
+	this->iTimerStepSeconds = step->Duration();
 	this->iTimerStepMult = 0;
 	this->timerState = tms;
-	this->bAgitate = bAgitate;
+	this->step = step;
 
 	// Display changes in the UI.
-	SendMessage(this->pgbStep, PBM_SETRANGE32, 0, uSeconds * PB_STEP_MULT);
+	SendMessage(this->pgbStep, PBM_SETRANGE32, 0,
+		step->Duration() * PB_STEP_MULT);
 	UpdateComponents();
 
 	// Start the timer if we were told to hit the ground running.
@@ -230,7 +229,7 @@ void TimerDialog::StartTimer() {
 	this->uAgitationTick = 0;
 	this->iAgitationDirection = 1;
 	SendMessage(this->pgbAgitation, PBM_SETPOS, 0, 0);
-	if (this->bAgitate && !SetTimer(this->hDlg, AGITATION_TIMER_ID, 100, NULL)) {
+	if (step->Agitate() && !SetTimer(hDlg, AGITATION_TIMER_ID, 100, NULL)) {
 		MsgBoxError(this->hDlg, _T("Timer error"),
 			_T("Failed to start the agitation progress bar system timer."));
 		MsgBoxLastError(this->hDlg);
@@ -271,7 +270,7 @@ void TimerDialog::PauseTimer(bool bChangeState) {
 		// Kill the agitation helper progress bar timer.
 		this->uAgitationTick = 0;
 		SendMessage(this->pgbAgitation, PBM_SETPOS, 0, 0);
-		if (this->iAgitationDirection && !KillTimer(hDlg, AGITATION_TIMER_ID)) {
+		if (step->Agitate() && !KillTimer(hDlg, AGITATION_TIMER_ID)) {
 			MsgBoxError(this->hDlg, _T("Timer error"),
 				_T("Failed to kill the agitation progress bar system timer."));
 			MsgBoxLastError(this->hDlg);
@@ -297,11 +296,11 @@ void TimerDialog::TimerTick() {
 	// Tick the timer counter.
 	this->iTimerStepSeconds--;
 	this->iTimerTotalSeconds++;
-	this->iTimerStepMult = (this->uTimerSetStep - this->iTimerStepSeconds) *
+	this->iTimerStepMult = (this->step->Duration() - this->iTimerStepSeconds) *
 		PB_STEP_MULT;
 
 	// Reverse the agitation direction.
-	if (this->bAgitate) {
+	if (this->step->Agitate()) {
 		if (this->iAgitationDirection > 0) {
 			SendMessage(this->pgbAgitation, PBM_SETPOS, (WPARAM)100, 0);
 			this->iAgitationDirection = -1;
@@ -339,7 +338,7 @@ void TimerDialog::SmoothTimerTick() {
  * Handles the tick of the agitation helper system timer.
  */
 void TimerDialog::AgitationTimerTick() {
-	if (!this->bAgitate)
+	if (!this->step->Agitate())
 		return;
 	this->uAgitationTick += this->iAgitationDirection * 10;
 	SendMessage(this->pgbAgitation, PBM_SETPOS, (WPARAM)uAgitationTick, 0);
