@@ -314,10 +314,7 @@ void TimerDialog::TimerTick() {
 
 	// Have we finished this step?
 	if (this->iTimerStepSeconds <= 0) {
-		PauseTimer(false);
-		this->timerState = TIMER_FINISHED;
-
-		UpdateComponents(false);
+		OnTimerFinished();
 		return;
 	}
 
@@ -342,6 +339,21 @@ void TimerDialog::AgitationTimerTick() {
 		return;
 	this->uAgitationTick += this->iAgitationDirection * 10;
 	SendMessage(this->pgbAgitation, PBM_SETPOS, (WPARAM)uAgitationTick, 0);
+}
+
+/**
+ * Handles the timer finished internal event.
+ */
+void TimerDialog::OnTimerFinished() {
+	// Pause the current timer.
+	PauseTimer(false);
+	this->timerState = TIMER_FINISHED;
+
+	// Check if we should proceed to the next step automatically.
+	if (step->AutoMoveToNext())
+		SendMessage(this->hwndParent, WM_STEPSTRACKER, ST_NEXT, (LPARAM)1);
+
+	UpdateComponents(false);
 }
 
 /**

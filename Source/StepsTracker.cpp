@@ -12,8 +12,10 @@
 
 #include "Step.h"
 
+// Private variables.
 static TCHAR szAgitate[8];
 static TCHAR szStand[6];
+static LONG lAutoStart;
 
 /**
  * Initializes the steps tracker.
@@ -21,6 +23,7 @@ static TCHAR szStand[6];
 StepsTracker::StepsTracker() {
 	_tcscpy(szAgitate, _T("Agitate"));
 	_tcscpy(szStand, _T("Stand"));
+	lAutoStart = 123;
 }
 
 /**
@@ -208,8 +211,10 @@ bool StepsTracker::GetSelectedItem(LPLVITEM lvi) const {
 
 /**
  * Goes to the next step in the ListView and notifies the timer of the change.
+ *
+ * @param bAutoStart Automatically start the timer for the step.
  */
-void StepsTracker::NextStep() const {
+void StepsTracker::NextStep(bool bAutoStart) const {
 	// Get the inde of the next selected item.
 	int iItem = GetSelectedItemIndex();
 	if (iItem == -1)
@@ -227,7 +232,7 @@ void StepsTracker::NextStep() const {
 	ListView_SetItemState(this->hwndList, iItem, LVIS_SELECTED, LVIS_SELECTED);
 	NMHDR nmh = { 0 };
 	nmh.code = LVN_ITEMACTIVATE;
-	OnNotify(&nmh, NULL);
+	OnNotify(&nmh, bAutoStart ? lAutoStart : NULL);
 }
 
 /**
@@ -247,7 +252,8 @@ void StepsTracker::OnNotify(LPNMHDR nmh, LPARAM lParam) const {
 			return;
 
 		// Get the duration and pass it along to the timer dialog.
-		this->timer->SetStepTimer((Step *)lvi.lParam, TIMER_RESET);
+		this->timer->SetStepTimer((Step *)lvi.lParam,
+			(lParam == lAutoStart) ? TIMER_RUNNING : TIMER_RESET);
 	} else if (nmh->code == LVN_GETDISPINFO) {
 		NMLVDISPINFO *plvdi = (NMLVDISPINFO *)lParam;
 		Step *step = (Step *)plvdi->item.lParam;
@@ -275,7 +281,7 @@ void StepsTracker::OnNotify(LPNMHDR nmh, LPARAM lParam) const {
 void StepsTracker::OnMessage(WPARAM wParam, LPARAM lParam) {
 	switch (wParam) {
 	case ST_NEXT:
-		NextStep();
+		NextStep(lParam ? true : false);
 		break;
 	default:
 		MsgBoxWarning(this->hwndParent, _T("Unknown message"),

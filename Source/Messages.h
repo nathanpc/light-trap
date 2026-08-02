@@ -18,12 +18,13 @@
  * Messages destined to be consumed by the StepsTracker class.
  *
  * WPARAM: ST_NEXT
- * LPARAM: Ignored.
  */
 #define WM_STEPSTRACKER (WM_APP + 0x0A01)
 
 /**
  * Jump to the next step. Sent as the WPARAM of WM_STEPSTRACKER.
+ *
+ * LPARAM: (BOOL) Automatically start the step?
  */
 #define ST_NEXT (WPARAM)(1)
 

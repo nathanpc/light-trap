@@ -63,6 +63,7 @@ private:
 
 	// Internal methods.
 	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
+	void OnTimerFinished();
 
 public:
 	// Constructor and destructor.

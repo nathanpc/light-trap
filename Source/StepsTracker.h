@@ -38,7 +38,7 @@ public:
 		bool bAutoNext) const;
 	int GetSelectedItemIndex() const;
 	bool GetSelectedItem(LPLVITEM lvi) const;
-	void NextStep() const;
+	void NextStep(bool bAutoStart) const;
 
 	// Event handlers.
 	void OnNotify(LPNMHDR nmh, LPARAM lParam) const;
