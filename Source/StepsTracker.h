@@ -34,11 +34,14 @@ public:
 
 	// User interface.
 	void SetupComponents(HINSTANCE hInst, HWND hwndParent, HWND hwndBar);
-	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
-		bool bAutoNext) const;
 	int GetSelectedItemIndex() const;
 	bool GetSelectedItem(LPLVITEM lvi) const;
 	void NextStep(bool bAutoStart) const;
+
+	// Step management.
+	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
+		bool bAutoNext) const;
+	void DeleteSelectedStep() const;
 
 	// Event handlers.
 	void OnNotify(LPNMHDR nmh, LPARAM lParam) const;

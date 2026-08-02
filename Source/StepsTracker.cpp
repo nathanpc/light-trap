@@ -30,6 +30,7 @@ StepsTracker::StepsTracker() {
  * Cleans up everything that was dynamically allocated by us.
  */
 StepsTracker::~StepsTracker() {
+	ListView_DeleteAllItems(this->hwndList);
 }
 
 /**
@@ -179,7 +180,27 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
 		MsgBoxError(this->hwndParent, _T("Steps list error"),
 			_T("An error occurred while trying to set the agitation of a step"));
 	}
+}
 
+/**
+ * Deletes the currently selected step from the ListView and disposes of the
+ * step object contained within it.
+ */
+void StepsTracker::DeleteSelectedStep() const {
+	// Get the selected item.
+	int iItem = GetSelectedItemIndex();
+	if (iItem == -1) {
+		MsgBoxError(this->hwndParent, _T("Step deletion error"),
+			_T("No step selected for deletion."));
+		return;
+	}
+
+	// Remove the item from the ListView.
+	if (!ListView_DeleteItem(this->hwndList, iItem)) {
+		MsgBoxError(this->hwndParent, _T("Step deletion error"),
+			_T("An error occurred while trying to delete the step."));
+		return;
+	}
 }
 
 /**
@@ -269,6 +290,19 @@ void StepsTracker::OnNotify(LPNMHDR nmh, LPARAM lParam) const {
 			plvdi->item.pszText = step->Agitate() ? szAgitate : szStand;
 			break;
 		}
+	} else if (nmh->code == LVN_DELETEITEM) {
+		LPNMLISTVIEW nmlv = (LPNMLISTVIEW)lParam;
+		Step *step = (Step *)nmlv->lParam;
+
+		// Check if we should reset the current timer.
+		if (timer->IsStep(step))
+			timer->SetStepTimer(NULL, TIMER_DISABLED);
+
+		// Clean up resources.
+		if (step)
+			delete step;
+		step = NULL;
+		nmlv->lParam = NULL;
 	}
 }
 

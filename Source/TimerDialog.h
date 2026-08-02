@@ -87,6 +87,9 @@ public:
 	// Event handlers.
 	void OnButtonPlay_Clicked();
 	void OnButtonNext_Clicked();
+
+	// Misc.
+	bool IsStep(const Step *step) const;
 };
 
 #endif // _TIMERDIALOG_H

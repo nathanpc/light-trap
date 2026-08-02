@@ -403,6 +403,17 @@ void TimerDialog::SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext,
 }
 
 /**
+ * Checks if the timer is currently performing a specific step.
+ *
+ * @param step Step to be checked.
+ *
+ * @return TRUE if the step is equal to the one provided, FALSE otherwise.
+ */
+bool TimerDialog::IsStep(const Step *step) const {
+	return this->step == step;
+}
+
+/**
  * Mesage handler for the dialog.
  *
  * @param  hDlg   Dialog window handler.
