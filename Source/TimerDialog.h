@@ -54,6 +54,11 @@ private:
 	int iTimerTotalSeconds;
 	int iTimerStepMult;
 
+	// Agitation helper.
+	UINT uAgitationTick;
+	int iAgitationDirection;
+	bool bAgitate;
+
 	// Internal methods.
 	void SetButtonsState(bool bPlay, LPTSTR szPlay, bool bNext, LPTSTR szNext);
 
@@ -69,11 +74,12 @@ public:
 
 	// Timer-related functions.
 	void SetProcessTotal(UINT uSeconds);
-	void SetStepTimer(UINT uSeconds, TMRSTATE tms);
+	void SetStepTimer(UINT uSeconds, TMRSTATE tms, bool bAgitate);
 	void StartTimer();
 	void PauseTimer(bool bChangeState);
 	void TimerTick();
 	void SmoothTimerTick();
+	void AgitationTimerTick();
 
 	// Event handlers.
 	void OnButtonPlay_Clicked();

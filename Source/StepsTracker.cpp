@@ -237,7 +237,7 @@ void StepsTracker::OnNotify(LPNMHDR nmh) const {
 			return;
 
 		// Get the duration and pass it along to the timer dialog.
-		this->timer->SetStepTimer((UINT)lvi.lParam, TIMER_RESET);
+		this->timer->SetStepTimer((UINT)lvi.lParam, TIMER_RESET, true);
 	}
 }
 

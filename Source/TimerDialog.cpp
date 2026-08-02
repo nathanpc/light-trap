@@ -21,6 +21,11 @@
 #define SMOOTH_TIMER_ID 1021
 
 /**
+ * Agitation helper progress bar timer (10 ms) ID.
+ */
+#define AGITATION_TIMER_ID 1022
+
+/**
  * Multiplier factor for smoothing out the step progress bar.
  */
 #define PB_STEP_MULT 10
@@ -36,8 +41,14 @@ BOOL CALLBACK TimerDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
  * @param rc         Rectangle where the dialog should be placed.
  */
 TimerDialog::TimerDialog(HINSTANCE hInst, HWND hwndParent, RECT rc) {
+	// Cache important handles.
 	this->hInst = hInst;
 	this->hwndParent = hwndParent;
+
+	// Agitation helper reset.
+	this->uAgitationTick = 0;
+	this->iAgitationDirection = 0;
+	this->bAgitate = false;
 
 	// Load and embed the detail view dialog.
 	HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDD_TIMER), RT_DIALOG);
@@ -100,10 +111,13 @@ void TimerDialog::SetupComponents(HWND hDlg) {
 	// Setup progress bar steps.
 	SendMessage(this->pgbStep, PBM_SETSTEP, (WPARAM)1, 0);
 	SendMessage(this->pgbTotal, PBM_SETSTEP, (WPARAM)1, 0);
+
+	// Setup agitation helper progress bar.
+	SendMessage(this->pgbAgitation, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
 	SendMessage(this->pgbAgitation, PBM_SETSTEP, (WPARAM)1, 0);
 
 	// Reset the timer.
-	SetStepTimer(0, TIMER_DISABLED);
+	SetStepTimer(0, TIMER_DISABLED, false);
 }
 
 /**
@@ -166,13 +180,15 @@ void TimerDialog::SetProcessTotal(UINT uSeconds) {
  *
  * @param uSeconds Number of seconds the timer should run for.
  * @param tms      State the timer should be in after setting it.
+ * @param bAgitate Are we supposed to be agitating?
  */
-void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms) {
+void TimerDialog::SetStepTimer(UINT uSeconds, TMRSTATE tms, bool bAgitate) {
 	// Set internal state variables.
 	this->uTimerSetStep = uSeconds;
 	this->iTimerStepSeconds = uSeconds;
 	this->iTimerStepMult = 0;
 	this->timerState = tms;
+	this->bAgitate = bAgitate;
 
 	// Display changes in the UI.
 	SendMessage(this->pgbStep, PBM_SETRANGE32, 0, uSeconds * PB_STEP_MULT);
@@ -210,6 +226,16 @@ void TimerDialog::StartTimer() {
 		return;
 	}
 
+	// Start the agitation helper progress bar system timer.
+	this->uAgitationTick = 0;
+	this->iAgitationDirection = 1;
+	SendMessage(this->pgbAgitation, PBM_SETPOS, 0, 0);
+	if (this->bAgitate && !SetTimer(this->hDlg, AGITATION_TIMER_ID, 100, NULL)) {
+		MsgBoxError(this->hDlg, _T("Timer error"),
+			_T("Failed to start the agitation progress bar system timer."));
+		MsgBoxLastError(this->hDlg);
+	}
+
 	// Set the timer state and update the UI accordingly.
 	this->timerState = TIMER_RUNNING;
 	UpdateComponents();
@@ -242,6 +268,16 @@ void TimerDialog::PauseTimer(bool bChangeState) {
 			bFailure = true;
 		}
 
+		// Kill the agitation helper progress bar timer.
+		this->uAgitationTick = 0;
+		SendMessage(this->pgbAgitation, PBM_SETPOS, 0, 0);
+		if (this->iAgitationDirection && !KillTimer(hDlg, AGITATION_TIMER_ID)) {
+			MsgBoxError(this->hDlg, _T("Timer error"),
+				_T("Failed to kill the agitation progress bar system timer."));
+			MsgBoxLastError(this->hDlg);
+		}
+		this->iAgitationDirection = 0;
+
 		if (bFailure)
 			return;
 	}
@@ -264,6 +300,19 @@ void TimerDialog::TimerTick() {
 	this->iTimerStepMult = (this->uTimerSetStep - this->iTimerStepSeconds) *
 		PB_STEP_MULT;
 
+	// Reverse the agitation direction.
+	if (this->bAgitate) {
+		if (this->iAgitationDirection > 0) {
+			SendMessage(this->pgbAgitation, PBM_SETPOS, (WPARAM)100, 0);
+			this->iAgitationDirection = -1;
+			this->uAgitationTick = 100;
+		} else {
+			SendMessage(this->pgbAgitation, PBM_SETPOS, 0, 0);
+			this->iAgitationDirection = 1;
+			this->uAgitationTick = 0;
+		}
+	}
+
 	// Have we finished this step?
 	if (this->iTimerStepSeconds <= 0) {
 		PauseTimer(false);
@@ -284,6 +333,16 @@ void TimerDialog::TimerTick() {
 void TimerDialog::SmoothTimerTick() {
 	this->iTimerStepMult++;
 	SendMessage(this->pgbStep, PBM_STEPIT, 0, 0);
+}
+
+/**
+ * Handles the tick of the agitation helper system timer.
+ */
+void TimerDialog::AgitationTimerTick() {
+	if (!this->bAgitate)
+		return;
+	this->uAgitationTick += this->iAgitationDirection * 10;
+	SendMessage(this->pgbAgitation, PBM_SETPOS, (WPARAM)uAgitationTick, 0);
 }
 
 /**
@@ -367,6 +426,9 @@ BOOL CALLBACK TimerDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 		switch (wParam) {
 		case SMOOTH_TIMER_ID:
 			pThis->SmoothTimerTick();
+			break;
+		case AGITATION_TIMER_ID:
+			pThis->AgitationTimerTick();
 			break;
 		case STEP_TIMER_ID:
 			pThis->TimerTick();
