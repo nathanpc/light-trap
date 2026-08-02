@@ -41,7 +41,7 @@ public:
 	void NextStep() const;
 
 	// Event handlers.
-	void OnNotify(LPNMHDR nmh) const;
+	void OnNotify(LPNMHDR nmh, LPARAM lParam) const;
 	void OnMessage(WPARAM wParam, LPARAM lParam);
 
 	// Misc.

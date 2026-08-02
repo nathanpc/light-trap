@@ -12,10 +12,15 @@
 
 #include "Step.h"
 
+static TCHAR szAgitate[8];
+static TCHAR szStand[6];
+
 /**
  * Initializes the steps tracker.
  */
 StepsTracker::StepsTracker() {
+	_tcscpy(szAgitate, _T("Agitate"));
+	_tcscpy(szStand, _T("Stand"));
 }
 
 /**
@@ -140,13 +145,13 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
 	Step *step = new Step(uDuration, szChemical, bAgitate, bAutoNext);
 
 	// Populate ListView item structure.
-	lvi.mask = LVIF_TEXT | LVIF_PARAM | LVIF_STATE;
+	lvi.mask = LVIF_TEXT | LVIF_PARAM | LVIF_STATE | LVIF_NORECOMPUTE;
 	lvi.state = 0; 
 	lvi.stateMask = 0; 
    	lvi.iItem = ListView_GetItemCount(this->hwndList);
 	lvi.iSubItem = 0;
 	lvi.lParam = (LPARAM)step;
-	lvi.pszText = (LPTSTR)step->TimeString();
+	lvi.pszText = LPSTR_TEXTCALLBACK;
 
 	// Insert the item into the ListView.
 	if (ListView_InsertItem(this->hwndList, &lvi) == -1) {
@@ -157,7 +162,7 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
 	// Populate and set the chemical sub-item.
 	lvi.mask = LVIF_TEXT;
 	lvi.iSubItem = 1;
-	lvi.pszText = (LPTSTR)step->Chemical();
+	lvi.pszText = LPSTR_TEXTCALLBACK;
 	if (!ListView_SetItem(this->hwndList, &lvi)) {
 		MsgBoxError(this->hwndParent, _T("Steps list error"),
 			_T("An error occurred while trying to set the chemical of a step"));
@@ -166,7 +171,7 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate,
 	// Populate and set the agitation sub-item.
 	lvi.mask = LVIF_TEXT;
 	lvi.iSubItem = 2;
-	lvi.pszText = bAgitate ? _T("Agitate") : _T("Stand");
+	lvi.pszText = LPSTR_TEXTCALLBACK;
 	if (!ListView_SetItem(this->hwndList, &lvi)) {
 		MsgBoxError(this->hwndParent, _T("Steps list error"),
 			_T("An error occurred while trying to set the agitation of a step"));
@@ -222,15 +227,17 @@ void StepsTracker::NextStep() const {
 	ListView_SetItemState(this->hwndList, iItem, LVIS_SELECTED, LVIS_SELECTED);
 	NMHDR nmh = { 0 };
 	nmh.code = LVN_ITEMACTIVATE;
-	OnNotify(&nmh);
+	OnNotify(&nmh, NULL);
 }
 
 /**
  * Handles WM_NOTIFY messages sent to the ListView control.
  *
- * @param nmh structure that contains information about the notification.
+ * @param nmh    Structure that contains information about the notification.
+ * @param lParam Pointer to an NMHDR structure containing the notification code
+ *               and additional information.
  */
-void StepsTracker::OnNotify(LPNMHDR nmh) const {
+void StepsTracker::OnNotify(LPNMHDR nmh, LPARAM lParam) const {
 	if (nmh->code == LVN_ITEMACTIVATE) {
 		LVITEM lvi = { 0 };
 
@@ -241,6 +248,21 @@ void StepsTracker::OnNotify(LPNMHDR nmh) const {
 
 		// Get the duration and pass it along to the timer dialog.
 		this->timer->SetStepTimer((Step *)lvi.lParam, TIMER_RESET);
+	} else if (nmh->code == LVN_GETDISPINFO) {
+		NMLVDISPINFO *plvdi = (NMLVDISPINFO *)lParam;
+		Step *step = (Step *)plvdi->item.lParam;
+
+		switch (plvdi->item.iSubItem) {
+		case 0:
+			plvdi->item.pszText = (LPTSTR)step->TimeString();
+			break;
+		case 1:
+			plvdi->item.pszText = (LPTSTR)step->Chemical();
+			break;
+		case 2:
+			plvdi->item.pszText = step->Agitate() ? szAgitate : szStand;
+			break;
+		}
 	}
 }
 

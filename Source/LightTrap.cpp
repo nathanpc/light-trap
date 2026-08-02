@@ -373,7 +373,7 @@ LRESULT WndMainNotify(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam) {
 
 	// Check if the message is for the steps list.
 	if (stepsTracker && (stepsTracker->ListHandle() == nmh->hwndFrom))
-		stepsTracker->OnNotify(nmh);
+		stepsTracker->OnNotify(nmh, lParam);
 	
 	return DefWindowProc(hWnd, wMsg, wParam, lParam);
 }
