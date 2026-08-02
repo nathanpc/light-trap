@@ -35,10 +35,13 @@ public:
 	// User interface.
 	void SetupComponents(HINSTANCE hInst, HWND hwndParent, HWND hwndBar);
 	void AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) const;
+	int GetSelectedItemIndex() const;
 	bool GetSelectedItem(LPLVITEM lvi) const;
+	void NextStep() const;
 
 	// Event handlers.
 	void OnNotify(LPNMHDR nmh) const;
+	void OnMessage(WPARAM wParam, LPARAM lParam);
 
 	// Misc.
 	UINT GetOverallDuration() const;

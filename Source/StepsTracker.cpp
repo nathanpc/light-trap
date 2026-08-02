@@ -172,6 +172,15 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) con
 }
 
 /**
+ * Gets the index of the selected item from the ListView.
+ *
+ * @return Index of the selected item or -1 if there are none selected.
+ */
+int StepsTracker::GetSelectedItemIndex() const {
+	return ListView_GetNextItem(this->hwndList, -1, LVNI_SELECTED);
+}
+
+/**
  * Get the selected list item object from the ListView.
  *
  * @param lvi Pointer to a ListView item structure with the flags field already
@@ -181,12 +190,36 @@ void StepsTracker::AddStep(UINT uDuration, LPTSTR szChemical, bool bAgitate) con
  */
 bool StepsTracker::GetSelectedItem(LPLVITEM lvi) const {
 	// Get the selected item.
-	int iItem = ListView_GetNextItem(this->hwndList, -1, LVNI_SELECTED);
+	int iItem = GetSelectedItemIndex();
 	if (iItem == -1)
 		return false;
 
 	lvi->iItem = iItem;
 	return ListView_GetItem(this->hwndList, lvi) != 0;
+}
+
+/**
+ * Goes to the next step in the ListView and notifies the timer of the change.
+ */
+void StepsTracker::NextStep() const {
+	// Get the inde of the next selected item.
+	int iItem = GetSelectedItemIndex();
+	if (iItem == -1)
+		return;
+	iItem++;
+
+	// Check if the next item exists.
+	if (iItem >= ListView_GetItemCount(this->hwndList)) {
+		MsgBoxError(this->hwndParent, _T("No next step"),
+			_T("You have reached the end of the steps list. Congratulations!"));
+		return;
+	}
+
+	// Select the next item.
+	ListView_SetItemState(this->hwndList, iItem, LVIS_SELECTED, LVIS_SELECTED);
+	NMHDR nmh = { 0 };
+	nmh.code = LVN_ITEMACTIVATE;
+	OnNotify(&nmh);
 }
 
 /**
@@ -205,6 +238,23 @@ void StepsTracker::OnNotify(LPNMHDR nmh) const {
 
 		// Get the duration and pass it along to the timer dialog.
 		this->timer->SetStepTimer((UINT)lvi.lParam, TIMER_RESET);
+	}
+}
+
+/**
+ * Handles WM_STEPSTRACKER messages sent to the main application window.
+ *
+ * @param wParam Type of action to be taken.
+ * @param lParam Associated parameter of the action.
+ */
+void StepsTracker::OnMessage(WPARAM wParam, LPARAM lParam) {
+	switch (wParam) {
+	case ST_NEXT:
+		NextStep();
+		break;
+	default:
+		MsgBoxWarning(this->hwndParent, _T("Unknown message"),
+			_T("StepsTracker received an unknown message."));
 	}
 }
 

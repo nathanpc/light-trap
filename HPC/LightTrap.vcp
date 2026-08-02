@@ -588,6 +588,7 @@ NODEP_CPP_LIGHT=\
 DEP_CPP_LIGHT=\
 	"..\Source\AboutDialog.h"\
 	"..\Source\LightTrap.h"\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\StepsTracker.h"\
 	"..\Source\TimerDialog.h"\
@@ -600,6 +601,10 @@ DEP_CPP_LIGHT=\
 # Begin Source File
 
 SOURCE=..\Source\LightTrap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Source\Messages.h
 # End Source File
 # Begin Source File
 
@@ -674,6 +679,7 @@ DEP_CPP_STDAF=\
 !ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
 
 DEP_CPP_STDAF=\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
@@ -821,6 +827,7 @@ DEP_CPP_ABOUT=\
 
 DEP_CPP_ABOUT=\
 	"..\Source\AboutDialog.h"\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
@@ -920,6 +927,7 @@ DEP_CPP_MSGBO=\
 !ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
 
 DEP_CPP_MSGBO=\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
@@ -1030,8 +1038,10 @@ DEP_CPP_STEPS=\
 !ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
 
 DEP_CPP_STEPS=\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
 	"..\Source\StepsTracker.h"\
+	"..\Source\TimerDialog.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	
 
@@ -1137,7 +1147,9 @@ DEP_CPP_TIMER=\
 !ELSEIF  "$(CFG)" == "LightTrap - Win32 (WCE x86em) Debug"
 
 DEP_CPP_TIMER=\
+	"..\Source\Messages.h"\
 	"..\Source\StdAfx.h"\
+	"..\Source\StepsTracker.h"\
 	"..\Source\TimerDialog.h"\
 	"..\Source\Utilities\MsgBoxes.h"\
 	

@@ -220,6 +220,9 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lPar
 		return WndMainClose(hWnd, wMsg, wParam, lParam);
 	case WM_DESTROY:
 		return WndMainDestroy(hWnd, wMsg, wParam, lParam);
+	case WM_STEPSTRACKER:
+		stepsTracker->OnMessage(wParam, lParam);
+		return 0;
 	}
 
 	return DefWindowProc(hWnd, wMsg, wParam, lParam);

@@ -309,26 +309,8 @@ void TimerDialog::OnButtonPlay_Clicked() {
  * Handles the click event of the Next/Reset button.
  */
 void TimerDialog::OnButtonNext_Clicked() {
-	// TODO: Skip should add the remainder seconds to total timer count before zeroing it.
-
-
-	switch (this->timerState) {
-	case TIMER_DISABLED:
-		SetButtonsState(false, _T("Continue"), false, _T("Next"));
-		break;
-	case TIMER_RESET:
-		SetButtonsState(true, _T("Start"), true, _T("Skip"));
-		break;
-	case TIMER_PAUSED:
-		SetButtonsState(true, _T("Continue"), true, _T("Next"));
-		break;
-	case TIMER_RUNNING:
-		SetButtonsState(true, _T("Pause"), false, _T("Next"));
-		break;
-	case TIMER_FINISHED:
-		SetButtonsState(false, _T("Continue"), true, _T("Next"));
-		break;
-	}
+	// Go to the next step in the steps list.
+	SendMessage(this->hwndParent, WM_STEPSTRACKER, ST_NEXT, 0);
 }
 
 /**

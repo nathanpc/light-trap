@@ -21,6 +21,7 @@
 
 // Local Header Files
 #include "Utilities/MsgBoxes.h"
+#include "Messages.h"
 
 // TODO: reference additional headers your program requires here
 
