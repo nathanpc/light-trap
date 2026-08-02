@@ -183,13 +183,13 @@ void TimerDialog::SetProcessTotal(UINT uSeconds) {
  */
 void TimerDialog::SetStepTimer(const Step *step, TMRSTATE tms) {
 	// Set internal state variables.
-	this->iTimerStepSeconds = step->Duration();
+	this->iTimerStepSeconds = step ? step->Duration() : 0;
 	this->iTimerStepMult = 0;
 	this->timerState = tms;
 	this->step = step;
 
 	// Display changes in the UI.
-	SendMessage(this->pgbStep, PBM_SETRANGE32, 0,
+	SendMessage(this->pgbStep, PBM_SETRANGE32, 0, (step == NULL) ? 0 :
 		step->Duration() * PB_STEP_MULT);
 	UpdateComponents();
 
